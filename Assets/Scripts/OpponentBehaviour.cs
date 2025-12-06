@@ -7,7 +7,7 @@ public class OpponentBehaviour : MonoBehaviour
     [SerializeField] float wallCheckDist = 0.6f;
 
     [SerializeField] LayerMask groundMask;
-    [SerializeField] NPCBehaviour.npc_team myTeam = NPCBehaviour.npc_team.Red;
+    [SerializeField] teamEnum myTeam = NPCBehaviour.teamEnum.Red;
 
     public PlayerController.BotCommand GetNextCommand(PlayerController self)
     {
