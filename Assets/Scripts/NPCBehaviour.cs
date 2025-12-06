@@ -21,8 +21,17 @@ public class NPCBehaviour : MonoBehaviour
         Red,
         Blue,
         Green,
-        Yellow
+        Yellow,
+
+        Nix
     }
+
+    public npc_team team
+    {
+        get; private set;
+    } = npc_team.Nix;
+
+    public void SetTeam(npc_team newTeam) => team = newTeam;
 
     public float npc_scarability
     { get; set; } = 1.0f;

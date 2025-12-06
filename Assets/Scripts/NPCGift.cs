@@ -55,7 +55,7 @@ public class NPCGift : MonoBehaviour
             NPCBehaviour thisNPC = GetComponent<NPCBehaviour>();
             NPCBehaviour thatNPC = otherNPC.GetComponent<NPCBehaviour>();
 
-            if(thisNPC.npc_team != thatNPC.npc_team)
+            if(thisNPC.team != thatNPC.team)
             {
                 if(Random.value < thisNPC.npc_scarability * scarabilityModifier)
                 {
