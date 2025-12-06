@@ -32,25 +32,37 @@ public class NPCGift : MonoBehaviour
 
 
 
-        private void UpdateOnGiftCollected(NPCBehaviour NPC)
+        private void UpdateOnGiftChanged(NPCBehaviour NPC, teamEnum teamOfGiver)
         {
             switch(NPC.giftCount)
             {
-                case 1:
-                    NPC.npc_speed += 1.0f;
+                case 0:
+                    NPC.SetTeam(teamEnum.Nix);
+                    print("team nix!");
+                    NPC.npc_speed = 1.0f;
                     NPC.npc_scarability -= 0.25f;
+                    break;
+                case 1:
+                    NPC.SetTeam(teamOfGiver);
+                    print("team " + teamOfGiver + "!");
+                    NPC.npc_speed = 2.0f;
+                    NPC.npc_scarability = 0.5f;
                     break;
                 case 2:
-                    NPC.npc_speed += 1.0f;
-                    NPC.npc_scarability -= 0.25f;
+                    NPC.npc_speed = 3.0f;
+                    NPC.npc_scarability = 0.75f;
                     break;
                 case 3:
-                    NPC.npc_speed += 1.0f;
-                    NPC.npc_scarability -= 0.25f;
+                    NPC.npc_speed = 4.0f;
+                    NPC.npc_scarability = 1.0f;
+                    break;
+                case 4:
+                    NPC.giftCount=3; // 3ten fazla olmasın
                     break;
                 default:
                     break;
             }
+            print("Total gifts: " + NPC.giftCount);
         }
 
 
@@ -65,7 +77,7 @@ public class NPCGift : MonoBehaviour
                 if(Random.value < thisNPC.npc_scarability * scarabilityModifier)
                 {
                     thatNPC.giftCount = Mathf.Max(0, thatNPC.giftCount - 1);
-                    UpdateOnGiftCollected(thatNPC);
+                    UpdateOnGiftChanged(thatNPC, thatNPC.team);
                     print("NPC scared away a gift! Other NPC's total gifts: " + thatNPC.giftCount);
                 }
             }
@@ -75,25 +87,16 @@ public class NPCGift : MonoBehaviour
         public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
         {
             NPCBehaviour npcBehaviour = GetComponent<NPCBehaviour>();
-            if(npcBehaviour.team != teamOfGiver)
+            if(npcBehaviour.team != teamOfGiver && npcBehaviour.team != teamEnum.Nix)
             {
-                if (npcBehaviour.team == teamEnum.Nix)
-                {
-                    npcBehaviour.SetTeam(teamOfGiver);
-                }
-                else
-                {
-                    //TODO different team gift
-                }
-                
+                npcBehaviour.giftCount-=1;
             }
             else
             {
                 npcBehaviour.giftCount += 1;
-                UpdateOnGiftCollected(npcBehaviour);
-                print("Gift collected! Total gifts: " + npcBehaviour.giftCount);
-                Destroy(gift);
             }
+            Destroy(gift);
+            UpdateOnGiftChanged(npcBehaviour,teamOfGiver);
 
         }
 
