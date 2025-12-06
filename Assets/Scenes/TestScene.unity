@@ -360,10 +360,7 @@ GameObject:
   - component: {fileID: 332890044}
   - component: {fileID: 332890043}
   - component: {fileID: 332890045}
-<<<<<<< Updated upstream
-=======
   - component: {fileID: 332890046}
->>>>>>> Stashed changes
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -384,10 +381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCBehaviour
   npcWalk: {fileID: 0}
-<<<<<<< Updated upstream
-=======
   npcGift: {fileID: 0}
->>>>>>> Stashed changes
 --- !u!212 &332890041
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -548,8 +542,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCWalk.NPCWalk
   npc_speed: 2
   dir_change_interv: 1
-<<<<<<< Updated upstream
-=======
 --- !u!114 &332890046
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -562,7 +554,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73824f85e21a52063984d2caed62dd58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCGift.NPCGift
->>>>>>> Stashed changes
 --- !u!1 &646607100
 GameObject:
   m_ObjectHideFlags: 0
