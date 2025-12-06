@@ -59,10 +59,22 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        if (isBotPlayer && botBrainComponent == null)
+        if (isBotPlayer && botBrainComponent != null)
         {
             botBrainComponent = GetComponent<AI.OpponentBehaviour>();
-        }
+            if(botBrainComponent == null)
+            {
+                Debug.LogWarning("PlayerController: isBotPlayer is true but no IBotBrain component found.");
+            }
+            else
+            {
+                Debug.Log("PlayerController: Bot brain component assigned: " + botBrainComponent.GetType().Name);
+            }
+            }
+            else
+            {
+                Debug.Log("PlayerController: Human player control assigned.");
+            }
     }
 
     private void Update()
