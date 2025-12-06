@@ -176,7 +176,7 @@ GameObject:
   - component: {fileID: 331644248}
   - component: {fileID: 331644251}
   - component: {fileID: 331644252}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -200,6 +200,9 @@ MonoBehaviour:
   groundCheckOffset: {x: 0, y: -0.6, z: 0}
   groundCheckRadius: 0.2
   isOpponentPlayer: 0
+  pickupTags:
+  - GiftPile
+  - Gift
 --- !u!212 &331644249
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -361,7 +364,7 @@ GameObject:
   - component: {fileID: 332890043}
   - component: {fileID: 332890045}
   - component: {fileID: 332890046}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: NPC
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -567,7 +570,7 @@ GameObject:
   - component: {fileID: 646607103}
   m_Layer: 0
   m_Name: GiftPile
-  m_TagString: Untagged
+  m_TagString: GiftPile
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1212,6 +1215,9 @@ MonoBehaviour:
   groundCheckOffset: {x: 0, y: -0.6, z: 0}
   groundCheckRadius: 0.2
   isOpponentPlayer: 1
+  pickupTags:
+  - GiftPile
+  - Gift
 --- !u!212 &2015635243
 SpriteRenderer:
   m_ObjectHideFlags: 0

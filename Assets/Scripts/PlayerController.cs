@@ -18,6 +18,12 @@ public class PlayerController : MonoBehaviour
     private float horizontalInput;
     private bool jumpRequested;
     private bool isJumpingFallback;
+    
+    [Header("Pickup")]
+    [Tooltip("Tags considered as pickups (GiftPile, item, etc.)")]
+    [SerializeField] private string[] pickupTags = new string[] { "GiftPile"};
+
+    private bool hasGift=false;
 
     private void Awake()
     {
@@ -132,5 +138,32 @@ public class PlayerController : MonoBehaviour
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position + groundCheckOffset, groundCheckRadius);
+    }
+
+    //Decide if pick up according to its tag
+    private bool IsPickup(GameObject other)
+    {
+        if (pickupTags == null || pickupTags.Length == 0) return false;
+        foreach (string t in pickupTags)
+        {
+            if (string.IsNullOrEmpty(t)) continue;
+            if (other.CompareTag(t)) return true;
+        }
+        return false;
+    }
+
+    //Handle all pick ups
+    private void HandlePickup(GameObject pickup)
+    {
+        if (pickup.CompareTag("GiftPile")){
+        this.hasGift=true;
+
+        
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (IsPickup(other.gameObject)) HandlePickup(other.gameObject);
     }
 }
