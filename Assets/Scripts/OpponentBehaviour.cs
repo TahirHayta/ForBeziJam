@@ -1,15 +1,16 @@
 using UnityEngine;
+using PlayerController;
 
-public class OpponentBehaviour : MonoBehaviour
+public class OpponentBehaviour : MonoBehaviour, IBotBrain
 {
     [SerializeField] float moveSpeed = 6.0f;
     [SerializeField] float detectRadius = 1.0f;
     [SerializeField] float wallCheckDist = 0.6f;
 
     [SerializeField] LayerMask groundMask;
-    [SerializeField] teamEnum myTeam = NPCBehaviour.teamEnum.Red;
+    [SerializeField] teamEnum myTeam = teamEnum.Red;
 
-    public PlayerController.BotCommand GetNextCommand(PlayerController self)
+    public BotCommand GetNextCommand(PlayerController.PlayerController self)
     {
         var cmd = new PlayerController.BotCommand();
         var target = findNearestTarget();

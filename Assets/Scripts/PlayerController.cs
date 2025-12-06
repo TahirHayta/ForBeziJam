@@ -3,6 +3,18 @@ using UnityEngine;
 using UnityEngine.InputSystem; // REQUIRED for the new system
 
 namespace PlayerController {
+
+[System.Serializable]
+public struct BotCommand
+{
+    public float move;
+    public bool jump;
+}
+
+public interface IBotBrain
+{
+    BotCommand GetNextCommand(PlayerController self);
+}
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
@@ -13,18 +25,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -0.6f, 0f);
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private bool isOpponentPlayer=true;
-
-    [System.Serializable]
-    public struct BotCommand
-    {
-        public float move;
-        public bool jump;
-    }
-
-    public interface IBotBrain
-    {
-        BotCommand GetNextCommand();
-    }
 
     [SerializeField] private MonoBehaviour botBrainComponent;
 
@@ -122,7 +122,15 @@ public class PlayerController : MonoBehaviour
 
     private void HandleBotInput()
     {
-        return;
+        if(botBrainComponent is IBotBrain botBrain)
+        {
+            BotCommand cmd = botBrain.GetNextCommand(this);
+            horizontalInput = Mathf.Clamp(cmd.move, -1f, 1f);
+            if (cmd.jump && IsGrounded())
+            {
+                jumpRequested = true;
+            }
+        }
     }
 
     private IEnumerator FallbackJump()
