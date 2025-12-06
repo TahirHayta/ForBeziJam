@@ -928,6 +928,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GiftPile
   team: 0
+  giftPrefab: {fileID: 1185058998079536700, guid: 2260671eb5b8b714784bd8490a634962, type: 3}
 --- !u!1 &843275637
 GameObject:
   m_ObjectHideFlags: 0
@@ -1216,6 +1217,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Gift
   team: 0
+  canNPCTakeThisGift: 1
 --- !u!1 &891267262
 GameObject:
   m_ObjectHideFlags: 0
