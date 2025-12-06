@@ -86,8 +86,7 @@ public class NPCGift : MonoBehaviour
 
         public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
         {
-            if (gift.GetComponent<Gift>()) {
-                gift.GetComponent<Gift>().canNPCTakeThisGift = false;}
+            gift.GetComponent<Gift>().canNPCTakeThisGift = false;
             Destroy(gift);
             NPCBehaviour npcBehaviour = GetComponent<NPCBehaviour>();
             if(npcBehaviour.team != teamOfGiver && npcBehaviour.team != teamEnum.Nix)

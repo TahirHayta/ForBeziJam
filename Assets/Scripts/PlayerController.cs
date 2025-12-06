@@ -204,7 +204,8 @@ public class PlayerController : MonoBehaviour
             this.hasGift=true;
             Debug.Log("gift is picked up");
             //Create a new gift gameobject
-            this.gift = new GameObject("MyNewGift"); //TODO
+            this.gift = Instantiate(pickup.GetComponent<GiftPile>().giftPrefab);
+            this.gift.SetActive(false);
         
         }
     }
