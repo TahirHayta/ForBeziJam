@@ -12,6 +12,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -0.6f, 0f);
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private bool isOpponentPlayer=true;
+    public enum player_team
+    {
+        Red,
+        Blue,
+        Green,
+        Yellow
+    }
+    public player_team this_player_team;
+    
 
     private Rigidbody2D rb2d;
 
@@ -24,6 +33,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private string[] pickupTags = new string[] { "GiftPile"};
 
     private bool hasGift=false;
+    private GameObject gift=null;
+
+    private void Start()
+    {
+        this.this_player_team=PlayerController.player_team.Red; // şimdilik takım
+        
+    }
 
     private void Awake()
     {
@@ -157,13 +173,27 @@ public class PlayerController : MonoBehaviour
     {
         if (pickup.CompareTag("GiftPile")){
         this.hasGift=true;
-
+        //Create a new gift gameobject
+        this.gift = new GameObject("MyNewGift"); //TODO
         
         }
     }
 
+    private void HandleNPCCollisionWithPlayer(GameObject otherNPC)
+    {
+        if (!this.hasGift) return;
+        otherNPC.GetComponentInParent<NPCGift.NPCGift>().HandleGiftInteraction(this.gift);
+        this.hasGift=false;
+        this.gift=null;
+        Debug.Log("gift is given");
+    }
+
+
+
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (IsPickup(other.gameObject)) HandlePickup(other.gameObject);
+        else if (other.gameObject.CompareTag("NPC")) HandleNPCCollisionWithPlayer(other.gameObject);
     }
 }

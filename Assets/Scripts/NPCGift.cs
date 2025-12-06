@@ -67,7 +67,7 @@ public class NPCGift : MonoBehaviour
         }
         // UNTESTED CODE ABOVE
 
-        void HandleGiftInteraction(GameObject gift)
+        public void HandleGiftInteraction(GameObject gift)
         {
             NPCBehaviour npcBehaviour = GetComponent<NPCBehaviour>();
             npcBehaviour.giftCount += 1;
