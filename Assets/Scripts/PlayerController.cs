@@ -22,6 +22,10 @@ public class PlayerController : MonoBehaviour
     public player_team this_player_team;
     
 
+    [Header("Player Settings")]
+    [SerializeField] private int playerNumber=0; // 0 WASD 1 Arrow Keysw
+    [SerializeField] private bool isBotPlayer=false;
+
     private Rigidbody2D rb2d;
 
     private float horizontalInput;
@@ -53,25 +57,27 @@ public class PlayerController : MonoBehaviour
         horizontalInput = 0f;
         
         // 2. Check Keyboard if we are player
-        if (!isOpponentPlayer){
-            if (Keyboard.current != null)
-            {
-                if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
+        switch (playerNumber)
+        {
+            case 0: // WASD
+                if (Keyboard.current != null)
                 {
-                    horizontalInput = -1f;
+                    if (Keyboard.current.aKey.isPressed) horizontalInput -= 1f;
+                    if (Keyboard.current.dKey.isPressed) horizontalInput += 1f;
+                    if (Keyboard.current.wKey.wasPressedThisFrame && IsGrounded()) jumpRequested = true;
                 }
-                else if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
+                break;
+            case 1: // Arrow Keys
+                if (Keyboard.current != null)
                 {
-                    horizontalInput = 1f;
+                    if (Keyboard.current.leftArrowKey.isPressed) horizontalInput -= 1f;
+                    if (Keyboard.current.rightArrowKey.isPressed) horizontalInput += 1f;
+                    if (Keyboard.current.upArrowKey.wasPressedThisFrame && IsGrounded()) jumpRequested = true;
                 }
-
-                if (Keyboard.current.spaceKey.wasPressedThisFrame && IsGrounded())
-                {
-                    jumpRequested = true;
-                }
-            }}
-        else{
-            //TODO for inputs coming from OpponentPlayer
+                break;
+            default:
+                HandleBotInput();
+                break;
         }
         
         // (Optional) Add Gamepad support here if needed using Gamepad.current
@@ -102,6 +108,11 @@ public class PlayerController : MonoBehaviour
                 jumpRequested = false;
             }
         }
+    }
+
+    private void HandleBotInput()
+    {
+        return;
     }
 
     private IEnumerator FallbackJump()
