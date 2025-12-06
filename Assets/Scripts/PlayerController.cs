@@ -62,19 +62,7 @@ public class PlayerController : MonoBehaviour
         if (isBotPlayer && botBrainComponent != null)
         {
             botBrainComponent = GetComponent<AI.OpponentBehaviour>();
-            if(botBrainComponent == null)
-            {
-                Debug.LogWarning("PlayerController: isBotPlayer is true but no IBotBrain component found.");
-            }
-            else
-            {
-                Debug.Log("PlayerController: Bot brain component assigned: " + botBrainComponent.GetType().Name);
-            }
-            }
-            else
-            {
-                Debug.Log("PlayerController: Human player control assigned.");
-            }
+        }
     }
 
     private void Update()
@@ -143,6 +131,7 @@ public class PlayerController : MonoBehaviour
         {
             BotCommand cmd = botBrain.GetNextCommand(this);
             horizontalInput = Mathf.Clamp(cmd.move, -1f, 1f);
+            print("Bot horizontal input: " + horizontalInput);
             if (cmd.jump && IsGrounded())
             {
                 jumpRequested = true;

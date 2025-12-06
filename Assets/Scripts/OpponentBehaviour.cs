@@ -15,7 +15,9 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
 
     public BotCommand GetNextCommand(PlayerController.PlayerController self)
     {
+        print("Getting next bot command");
         var cmd = new PlayerController.BotCommand();
+        print("Returning cmd.move = " + cmd.move);
         var target = findNearestTarget();
         if (target == null) return cmd;
 
@@ -33,6 +35,7 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
 
     Transform findNearestTarget()
     {
+        print("Finding nearest target");
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectRadius, npcMask);
         Transform nearest = null;
         float nearestDistSqr = float.MaxValue;
@@ -48,6 +51,7 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
                 nearestDistSqr = d;
             }
         }
+        print("Nearest target: " + (nearest != null ? nearest.name : "None"));
         return nearest;
     }
 }
