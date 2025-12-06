@@ -1,36 +1,36 @@
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(CharacterController))]
+namespace NPCWalk { 
+
+[RequireComponent(typeof(Rigidbody2D))]
 public class NPCWalk : MonoBehaviour
 {
     public float npc_speed = 2.0f;
     public float dir_change_interv = 1.0f;
     
 
-    private CharacterController controller;
-    private Vector3 move_direction = Vector3.zero;
-    float heading = 0.0f;
+    Rigidbody2D rb2d;
+    int direction = 1;
 
     void Awake()
     {
-        controller = GetComponent<CharacterController>();
+        rb2d = GetComponent<Rigidbody2D>();
         StartCoroutine(ChangeDirection());
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        controller.SimpleMove(forward * npc_speed);
+        rb2d.linearVelocity = new Vector2(direction * npc_speed, rb2d.linearVelocity.y);
     }
 
-    IEnumerator ChangeDirection()
+    System.Collections.IEnumerator ChangeDirection()
     {
         while (true)
         {
-            heading = Random.Range(0, 360);
-            transform.eulerAngles = new Vector3(0, heading, 0);
             yield return new WaitForSeconds(dir_change_interv);
+            direction *= Random.value > 0.5f ? 1 : -1;
         }
     }
+}
 }

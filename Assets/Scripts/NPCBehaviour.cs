@@ -1,17 +1,13 @@
 using UnityEngine;
 using System.Collections;
+using NPCWalk;
 
+[RequireComponent(typeof(NPCWalk.NPCWalk))]
 public class NPCBehaviour : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] NPCWalk.NPCWalk npcWalk;
+    void Awake()
     {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        npcWalk = GetComponent<NPCWalk.NPCWalk>();
     }
 }
