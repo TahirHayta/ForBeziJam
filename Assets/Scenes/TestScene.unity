@@ -360,6 +360,10 @@ GameObject:
   - component: {fileID: 332890044}
   - component: {fileID: 332890043}
   - component: {fileID: 332890045}
+<<<<<<< Updated upstream
+=======
+  - component: {fileID: 332890046}
+>>>>>>> Stashed changes
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -380,6 +384,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCBehaviour
   npcWalk: {fileID: 0}
+<<<<<<< Updated upstream
+=======
+  npcGift: {fileID: 0}
+>>>>>>> Stashed changes
 --- !u!212 &332890041
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -540,6 +548,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NPCWalk.NPCWalk
   npc_speed: 2
   dir_change_interv: 1
+<<<<<<< Updated upstream
+=======
+--- !u!114 &332890046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332890039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73824f85e21a52063984d2caed62dd58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCGift.NPCGift
+>>>>>>> Stashed changes
 --- !u!1 &646607100
 GameObject:
   m_ObjectHideFlags: 0
@@ -826,7 +849,7 @@ GameObject:
   - component: {fileID: 874114711}
   m_Layer: 0
   m_Name: Gift
-  m_TagString: Untagged
+  m_TagString: Gift
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -898,7 +921,7 @@ Transform:
   m_GameObject: {fileID: 874114710}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.09, y: -3.35, z: 0}
+  m_LocalPosition: {x: -4.28, y: -5.16, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

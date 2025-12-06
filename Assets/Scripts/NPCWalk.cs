@@ -19,6 +19,11 @@ public class NPCWalk : MonoBehaviour
         StartCoroutine(ChangeDirection());
     }
 
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        direction *= -1;
+    }
+
     void FixedUpdate()
     {
         rb2d.linearVelocity = new Vector2(direction * npc_speed, rb2d.linearVelocity.y);
@@ -33,4 +38,5 @@ public class NPCWalk : MonoBehaviour
         }
     }
 }
+
 }
