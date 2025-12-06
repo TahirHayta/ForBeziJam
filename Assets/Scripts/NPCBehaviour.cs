@@ -16,22 +16,9 @@ public class NPCBehaviour : MonoBehaviour
         set => npcWalk.npc_speed = value;
     }
 
-    public enum npc_team
-    {
-        Red,
-        Blue,
-        Green,
-        Yellow,
+    public teamEnum team= teamEnum.Nix;
 
-        Nix
-    }
-
-    public npc_team team
-    {
-        get; private set;
-    } = npc_team.Nix;
-
-    public void SetTeam(npc_team newTeam) => team = newTeam;
+    public void SetTeam(teamEnum newTeam) => team = newTeam;
 
     public float npc_scarability
     { get; set; } = 1.0f;

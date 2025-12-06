@@ -15,17 +15,22 @@ public class NPCGift : MonoBehaviour
         // }
 
         //Assuming tag is gift for Gift objects
-        void OnCollisionEnter2D(Collision2D collision)
+        void OnTriggerEnter2D(Collider2D collision)
         {
             if (collision.gameObject.CompareTag("Gift"))
             {
-                HandleGiftInteraction(collision.gameObject);
+                HandleGiftInteraction(collision.gameObject, collision.gameObject.GetComponent<Gift>().team); 
             }
-            else if (collision.gameObject.CompareTag("NPC"))
+        }
+        void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.gameObject.CompareTag("NPC"))
             {
                 HandleNPCCollision(collision.gameObject);
             }
         }
+
+
 
         private void UpdateOnGiftCollected(NPCBehaviour NPC)
         {
@@ -67,13 +72,29 @@ public class NPCGift : MonoBehaviour
         }
         // UNTESTED CODE ABOVE
 
-        public void HandleGiftInteraction(GameObject gift)
+        public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
         {
             NPCBehaviour npcBehaviour = GetComponent<NPCBehaviour>();
-            npcBehaviour.giftCount += 1;
-            UpdateOnGiftCollected(npcBehaviour);
-            print("Gift collected! Total gifts: " + npcBehaviour.giftCount);
-            Destroy(gift);
+            if(npcBehaviour.team != teamOfGiver)
+            {
+                if (npcBehaviour.team == teamEnum.Nix)
+                {
+                    npcBehaviour.SetTeam(teamOfGiver);
+                }
+                else
+                {
+                    //TODO different team gift
+                }
+                
+            }
+            else
+            {
+                npcBehaviour.giftCount += 1;
+                UpdateOnGiftCollected(npcBehaviour);
+                print("Gift collected! Total gifts: " + npcBehaviour.giftCount);
+                Destroy(gift);
+            }
+
         }
 
     }

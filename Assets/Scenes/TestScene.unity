@@ -571,6 +571,7 @@ GameObject:
   - component: {fileID: 646607102}
   - component: {fileID: 646607101}
   - component: {fileID: 646607103}
+  - component: {fileID: 646607104}
   m_Layer: 0
   m_Name: GiftPile
   m_TagString: GiftPile
@@ -697,6 +698,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &646607104
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 646607100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2ab8a2cf141de24db020bd8ef73e4bc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GiftPile
+  team: 0
 --- !u!1 &843275637
 GameObject:
   m_ObjectHideFlags: 0
@@ -845,6 +859,7 @@ GameObject:
   - component: {fileID: 874114712}
   - component: {fileID: 874114711}
   - component: {fileID: 874114713}
+  - component: {fileID: 874114714}
   m_Layer: 0
   m_Name: Gift
   m_TagString: Gift
@@ -919,7 +934,7 @@ Transform:
   m_GameObject: {fileID: 874114710}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.28, y: -5.16, z: 0}
+  m_LocalPosition: {x: 5.62, y: -4.86, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -955,7 +970,7 @@ BoxCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -971,6 +986,19 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &874114714
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874114710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d690fc2a03181a848a4c82d5b3a4c9bd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Gift
+  team: 0
 --- !u!1 &891267262
 GameObject:
   m_ObjectHideFlags: 0

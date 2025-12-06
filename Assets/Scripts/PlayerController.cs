@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem; // REQUIRED for the new system
 
+namespace PlayerController {
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
@@ -12,14 +13,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -0.6f, 0f);
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private bool isOpponentPlayer=true;
-    public enum player_team
-    {
-        Red,
-        Blue,
-        Green,
-        Yellow
-    }
-    public player_team this_player_team;
+
+    public teamEnum this_player_team;
     
 
     [Header("Player Settings")]
@@ -41,7 +36,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        this.this_player_team=PlayerController.player_team.Red; // şimdilik takım
+        this.this_player_team=teamEnum.Red; // şimdilik takım
         
     }
 
@@ -182,10 +177,11 @@ public class PlayerController : MonoBehaviour
     //Handle all pick ups
     private void HandlePickup(GameObject pickup)
     {
-        if (pickup.CompareTag("GiftPile")){
-        this.hasGift=true;
-        //Create a new gift gameobject
-        this.gift = new GameObject("MyNewGift"); //TODO
+        if (pickup.CompareTag("GiftPile")&&pickup.GetComponent<GiftPile>().team==this_player_team){
+            this.hasGift=true;
+            Debug.Log("gift is picked up");
+            //Create a new gift gameobject
+            this.gift = new GameObject("MyNewGift"); //TODO
         
         }
     }
@@ -193,7 +189,7 @@ public class PlayerController : MonoBehaviour
     private void HandleNPCCollisionWithPlayer(GameObject otherNPC)
     {
         if (!this.hasGift) return;
-        otherNPC.GetComponentInParent<NPCGift.NPCGift>().HandleGiftInteraction(this.gift);
+        otherNPC.GetComponentInParent<NPCGift.NPCGift>().HandleGiftInteraction(this.gift,this_player_team);
         this.hasGift=false;
         this.gift=null;
         Debug.Log("gift is given");
@@ -208,3 +204,13 @@ public class PlayerController : MonoBehaviour
         else if (other.gameObject.CompareTag("NPC")) HandleNPCCollisionWithPlayer(other.gameObject);
     }
 }
+}
+public enum teamEnum
+    {
+        Red,
+        Blue,
+        Green,
+        Yellow,
+
+        Nix
+    }
