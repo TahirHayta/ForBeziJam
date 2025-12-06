@@ -21,8 +21,33 @@ public class NPCGift : MonoBehaviour
             }
         }
 
+        private void UpdateOnGiftCollected(NPCBehaviour NPC)
+        {
+            switch(NPC.giftCount)
+            {
+                case 1:
+                    NPC.npc_speed += 1.0f;
+                    NPC.npc_scarability -= 0.25f;
+                    break;
+                case 2:
+                    NPC.npc_speed += 1.0f;
+                    NPC.npc_scarability -= 0.25f;
+                    break;
+                case 3:
+                    NPC.npc_speed += 1.0f;
+                    NPC.npc_scarability -= 0.25f;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         void HandleGiftInteraction(GameObject gift)
         {
+            NPCBehaviour npcBehaviour = GetComponent<NPCBehaviour>();
+            npcBehaviour.giftCount += 1;
+            UpdateOnGiftCollected(npcBehaviour);
+            print("Gift collected! Total gifts: " + npcBehaviour.giftCount);
             Destroy(gift);
         }
 
