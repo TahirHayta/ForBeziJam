@@ -14,7 +14,32 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float groundCheckRadius = 0.2f;
     [SerializeField] private bool isOpponentPlayer=true;
 
+<<<<<<< Updated upstream
     public teamEnum this_player_team;
+=======
+    [System.Serializable]
+    public struct BotCommand
+    {
+        public float move;
+        public bool jump;
+    }
+
+    public interface IBotBrain
+    {
+        BotCommand GetNextCommand();
+    }
+
+    [SerializeField] private MonoBehaviour botBrainComponent;
+
+    public enum player_team
+    {
+        Red,
+        Blue,
+        Green,
+        Yellow
+    }
+    public player_team this_player_team;
+>>>>>>> Stashed changes
     
 
     [Header("Player Settings")]
