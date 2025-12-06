@@ -195,6 +195,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d43d2b61d30f98469f9ab0381180cde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  speed: 6
+  jumpForce: 7
+  groundCheckOffset: {x: 0, y: -0.6, z: 0}
+  groundCheckRadius: 0.2
+  isOpponentPlayer: 0
 --- !u!212 &331644249
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -354,6 +359,7 @@ GameObject:
   - component: {fileID: 332890040}
   - component: {fileID: 332890044}
   - component: {fileID: 332890043}
+  - component: {fileID: 332890045}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -373,6 +379,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0da4edf3c8d0ce74a996480b0b9c65b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCBehaviour
+  npcWalk: {fileID: 0}
 --- !u!212 &332890041
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -519,6 +526,20 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &332890045
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332890039}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cb7e296e69f5831698fa75bd6214635, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCWalk.NPCWalk
+  npc_speed: 2
+  dir_change_interv: 1
 --- !u!1 &646607100
 GameObject:
   m_ObjectHideFlags: 0
@@ -1125,6 +1146,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d43d2b61d30f98469f9ab0381180cde, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
+  speed: 6
+  jumpForce: 7
+  groundCheckOffset: {x: 0, y: -0.6, z: 0}
+  groundCheckRadius: 0.2
+  isOpponentPlayer: 1
 --- !u!212 &2015635243
 SpriteRenderer:
   m_ObjectHideFlags: 0
