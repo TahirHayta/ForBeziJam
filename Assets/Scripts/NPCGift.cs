@@ -6,11 +6,13 @@ namespace NPCGift {
 [RequireComponent(typeof(Rigidbody2D))]
 public class NPCGift : MonoBehaviour
     {
+        [Range(0.0f, 1.0f)]
+        public float scarabilityModifier = 0.25f;
 
-        void Awake()
-        {
-            return;
-        }
+        // void Awake()
+        // {
+        //     return;
+        // }
 
         //Assuming tag is gift for Gift objects
         void OnCollisionEnter2D(Collision2D collision)
@@ -18,6 +20,10 @@ public class NPCGift : MonoBehaviour
             if (collision.gameObject.CompareTag("Gift"))
             {
                 HandleGiftInteraction(collision.gameObject);
+            }
+            else if (collision.gameObject.CompareTag("NPC"))
+            {
+                HandleNPCCollision(collision.gameObject);
             }
         }
 
@@ -41,6 +47,25 @@ public class NPCGift : MonoBehaviour
                     break;
             }
         }
+
+
+        // UNTESTED CODE BELOW
+        void HandleNPCCollision(GameObject otherNPC)
+        {
+            NPCBehaviour thisNPC = GetComponent<NPCBehaviour>();
+            NPCBehaviour thatNPC = otherNPC.GetComponent<NPCBehaviour>();
+
+            if(thisNPC.npc_team != thatNPC.npc_team)
+            {
+                if(Random.value < thisNPC.npc_scarability * scarabilityModifier)
+                {
+                    thatNPC.giftCount = Mathf.Max(0, thatNPC.giftCount - 1);
+                    UpdateOnGiftCollected(thatNPC);
+                    print("NPC scared away a gift! Other NPC's total gifts: " + thatNPC.giftCount);
+                }
+            }
+        }
+        // UNTESTED CODE ABOVE
 
         void HandleGiftInteraction(GameObject gift)
         {
