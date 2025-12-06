@@ -1,13 +1,16 @@
 using UnityEngine;
 using PlayerController;
 
+namespace AI
+{
 public class OpponentBehaviour : MonoBehaviour, IBotBrain
 {
     [SerializeField] float moveSpeed = 6.0f;
-    [SerializeField] float detectRadius = 1.0f;
+    [SerializeField] float detectRadius = 10.0f;
     [SerializeField] float wallCheckDist = 0.6f;
 
     [SerializeField] LayerMask groundMask;
+    [SerializeField] LayerMask npcMask;
     [SerializeField] teamEnum myTeam = teamEnum.Red;
 
     public BotCommand GetNextCommand(PlayerController.PlayerController self)
@@ -24,13 +27,13 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
                                              Vector2.down,
                                              0.7f,
                                              groundMask);
-
+        print("Grounded: " + grounded);
         return cmd;
     }
 
     Transform findNearestTarget()
     {
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectRadius);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectRadius, npcMask);
         Transform nearest = null;
         float nearestDistSqr = float.MaxValue;
         foreach (var hit in hits)
@@ -47,4 +50,5 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
         }
         return nearest;
     }
+}
 }

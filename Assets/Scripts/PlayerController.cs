@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem; // REQUIRED for the new system
+using AI;
 
 namespace PlayerController {
 
@@ -58,6 +59,10 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        if (isBotPlayer && botBrainComponent == null)
+        {
+            botBrainComponent = GetComponent<AI.OpponentBehaviour>();
+        }
     }
 
     private void Update()
