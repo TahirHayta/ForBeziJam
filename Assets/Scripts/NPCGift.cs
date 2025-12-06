@@ -19,7 +19,7 @@ public class NPCGift : MonoBehaviour
         {
             if (collision.gameObject.CompareTag("Gift"))
             {
-                HandleGiftInteraction(collision.gameObject, collision.gameObject.GetComponent<Gift>().team); 
+                if (collision.gameObject.GetComponent<Gift>().canNPCTakeThisGift) HandleGiftInteraction(collision.gameObject, collision.gameObject.GetComponent<Gift>().team); 
             }
         }
         void OnCollisionEnter2D(Collision2D collision)
@@ -86,6 +86,9 @@ public class NPCGift : MonoBehaviour
 
         public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
         {
+            if (gift.GetComponent<Gift>()) {
+                gift.GetComponent<Gift>().canNPCTakeThisGift = false;}
+            Destroy(gift);
             NPCBehaviour npcBehaviour = GetComponent<NPCBehaviour>();
             if(npcBehaviour.team != teamOfGiver && npcBehaviour.team != teamEnum.Nix)
             {
@@ -95,7 +98,7 @@ public class NPCGift : MonoBehaviour
             {
                 npcBehaviour.giftCount += 1;
             }
-            Destroy(gift);
+
             UpdateOnGiftChanged(npcBehaviour,teamOfGiver);
 
         }

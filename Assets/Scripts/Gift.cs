@@ -3,6 +3,8 @@ using UnityEngine;
 public class Gift : MonoBehaviour
 {
     [SerializeField] public teamEnum team;
+    public bool canNPCTakeThisGift=true;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
