@@ -158,7 +158,7 @@ public class PlayerController : MonoBehaviour
         isJumpingFallback = false;
     }
 
-    private bool IsGrounded()
+    public bool IsGrounded()
     {
         if (rb2d != null)
         {
