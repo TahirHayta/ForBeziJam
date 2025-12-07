@@ -10,6 +10,7 @@ public struct BotCommand
 {
     public float move;
     public bool jump;
+    public bool down;
 }
 
 public interface IBotBrain
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Movement")]
     [Tooltip("Horizontal move speed")] [SerializeField] private float speed = 6f;
-    [Tooltip("Jump impulse")] [SerializeField] private float jumpForce = 7f;
+    [Tooltip("Jump impulse")] [SerializeField] private float jumpForce = 9f;
 
     [Header("Ground Check")]
     [SerializeField] private Vector3 groundCheckOffset = new Vector3(0f, -0.6f, 0f);
@@ -28,7 +29,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isOpponentPlayer=true;
 
     [SerializeField] private MonoBehaviour botBrainComponent;
-
+    LayerMask stairsMask;
 
     public teamEnum this_player_team;
     
@@ -38,9 +39,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private bool isBotPlayer=false;
 
     private Rigidbody2D rb2d;
+    private Collider2D playerCollider;
 
     private float horizontalInput;
     private bool jumpRequested;
+    private bool downRequested;
     private bool isJumpingFallback;
     
     [Header("Pickup")]
@@ -53,6 +56,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        playerCollider = GetComponent<CircleCollider2D>();
         
     }
 
@@ -63,6 +67,7 @@ public class PlayerController : MonoBehaviour
         {
             botBrainComponent = GetComponent<AI.OpponentBehaviour>();
         }
+        this.stairsMask= LayerMask.GetMask("Stairs");
     }
 
     private void Update()
@@ -80,6 +85,8 @@ public class PlayerController : MonoBehaviour
                     if (Keyboard.current.aKey.isPressed) horizontalInput -= 1f;
                     if (Keyboard.current.dKey.isPressed) horizontalInput += 1f;
                     if (Keyboard.current.wKey.wasPressedThisFrame && IsGrounded()) jumpRequested = true;
+                    if (Keyboard.current.sKey.isPressed) downRequested = true;
+
                 }
                 break;
             case 1: // Arrow Keys
@@ -88,6 +95,7 @@ public class PlayerController : MonoBehaviour
                     if (Keyboard.current.leftArrowKey.isPressed) horizontalInput -= 1f;
                     if (Keyboard.current.rightArrowKey.isPressed) horizontalInput += 1f;
                     if (Keyboard.current.upArrowKey.wasPressedThisFrame && IsGrounded()) jumpRequested = true;
+                    if (Keyboard.current.downArrowKey.isPressed) downRequested = true;
                 }
                 break;
             default:
@@ -121,6 +129,13 @@ public class PlayerController : MonoBehaviour
                 jumpRequested = false;
             }
         }
+        
+        if (downRequested)
+        {
+            TryDropThrough();
+            downRequested = false;   
+        }
+
     }
 
     private void HandleBotInput()
@@ -132,6 +147,10 @@ public class PlayerController : MonoBehaviour
             if (cmd.jump && IsGrounded())
             {
                 jumpRequested = true;
+            }
+            if (cmd.down)
+            {
+                downRequested = true;
             }
         }
     }
@@ -180,6 +199,37 @@ public class PlayerController : MonoBehaviour
         // Raycast downward with no layer mask - hits anything
         RaycastHit2D hit = Physics2D.Raycast(originFallback, Vector2.down, groundCheckRadius + 0.1f);
         return hit.collider != null && hit.collider.gameObject != gameObject;
+    }
+    
+    void TryDropThrough()
+    {
+        // Only drop if standing on a platform
+        if (!IsGrounded()) return;
+        float checkDistance =0.1f;
+        // Find everything right under the player
+        Collider2D[] hits = Physics2D.OverlapBoxAll(
+            playerCollider.bounds.center + Vector3.down * (playerCollider.bounds.extents.y + checkDistance),
+            new Vector2(playerCollider.bounds.size.x * 0.9f, checkDistance * 2f),
+            0f,
+            stairsMask
+            
+        );
+
+
+        if (hits.Length == 0) {Debug.Log("No hits"); return;}
+
+        // Ignore collisions with all detected platforms for a short time
+        foreach (var platform in hits)
+        {
+            StartCoroutine(TemporarilyIgnorePlatform(platform));
+        }
+    }
+    IEnumerator TemporarilyIgnorePlatform(Collider2D platform) // When falling downwards
+    {
+        float ignoreDuration = 0.3f;
+        Physics2D.IgnoreCollision(playerCollider, platform, true);
+        yield return new WaitForSeconds(ignoreDuration);
+        if (platform) Physics2D.IgnoreCollision(playerCollider, platform, false);
     }
 
     private void OnDrawGizmosSelected() //Debuglarken yardım etsin diye
@@ -231,6 +281,21 @@ public class PlayerController : MonoBehaviour
             }
         if (IsPickup(other.gameObject)) HandlePickup(other.gameObject);
         else if (other.gameObject.CompareTag("NPC")) HandleNPCCollisionWithPlayer(other.gameObject);
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Stairs")){
+            foreach (ContactPoint2D contact in collision.contacts)
+    {
+                // If the collision normal points UP, player is ABOVE the stairs
+                if (contact.normal.y < 0.5f)
+                {
+                    StartCoroutine(TemporarilyIgnorePlatform(collision.collider));
+                    rb2d.AddForce(Vector2.up * 5f, ForceMode2D.Impulse);
+                    break;
+                }
+    }        
+    }
     }
 }
 }
