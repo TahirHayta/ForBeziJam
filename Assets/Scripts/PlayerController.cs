@@ -53,7 +53,6 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
-        this.this_player_team=teamEnum.Red; // şimdilik takım
         
     }
 

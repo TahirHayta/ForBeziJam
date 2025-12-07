@@ -30,48 +30,7 @@ public class NPCGift : MonoBehaviour
             }
         }
 
-
-
-        private void UpdateOnGiftChanged(NPCBehaviour NPC, teamEnum teamOfGiver)
-        {
-            switch(NPC.giftCount)
-            {
-                case -1:
-                    NPC.giftCount=0;
-                    NPC.SetTeam(teamEnum.Nix);
-                    print("team nix!");
-                    NPC.npc_speed = 1.0f;
-                    NPC.npc_scarability -= 0.25f;
-                    break;
-                case 0:
-                    NPC.SetTeam(teamEnum.Nix);
-                    print("team nix!");
-                    NPC.npc_speed = 1.0f;
-                    NPC.npc_scarability -= 0.25f;
-                    break;
-                case 1:
-                    NPC.SetTeam(teamOfGiver);
-                    print("team " + teamOfGiver + "!");
-                    NPC.npc_speed = 2.0f;
-                    NPC.npc_scarability = 0.5f;
-                    break;
-                case 2:
-                    NPC.npc_speed = 3.0f;
-                    NPC.npc_scarability = 0.75f;
-                    break;
-                case 3:
-                    NPC.npc_speed = 4.0f;
-                    NPC.npc_scarability = 1.0f;
-                    break;
-                case 4:
-                    NPC.giftCount=3; // 3ten fazla olmasın
-                    break;
-                default:
-                    break;
-            }
-            print("Total gifts: " + NPC.giftCount);
-        }
-
+        // DELETE the old UpdateOnGiftChanged method here (lines 34-67)
 
         // UNTESTED CODE BELOW
         void HandleNPCCollision(GameObject otherNPC)
@@ -83,9 +42,9 @@ public class NPCGift : MonoBehaviour
             {
                 if(Random.value < thisNPC.npc_scarability * scarabilityModifier)
                 {
-                    thatNPC.giftCount = Mathf.Max(0, thatNPC.giftCount - 1);
+                    thatNPC.RemoveGift(thatNPC.team);
                     UpdateOnGiftChanged(thatNPC, thatNPC.team);
-                    print("NPC scared away a gift! Other NPC's total gifts: " + thatNPC.giftCount);
+                    print("NPC scared away a gift! Other NPC's total gifts: " + thatNPC.GetTotalGifts());
                 }
             }
         }
@@ -96,17 +55,51 @@ public class NPCGift : MonoBehaviour
             gift.GetComponent<Gift>().canNPCTakeThisGift = false;
             Destroy(gift);
             NPCBehaviour npcBehaviour = GetComponent<NPCBehaviour>();
-            if(npcBehaviour.team != teamOfGiver && npcBehaviour.team != teamEnum.Nix)
+
+            // If NPC has gifts from OTHER teams, remove one
+            if (npcBehaviour.team != teamOfGiver && npcBehaviour.team != teamEnum.Nix)
             {
-                npcBehaviour.giftCount-=1;
-            }
-            else
-            {
-                npcBehaviour.giftCount += 1;
+                npcBehaviour.RemoveGift(npcBehaviour.team); // remove old team's gift
             }
 
-            UpdateOnGiftChanged(npcBehaviour,teamOfGiver);
+            npcBehaviour.AddGift(teamOfGiver); // add new gift from giver
+            
+            // Update team if this is the first gift
+            if (npcBehaviour.GetTotalGifts() == 1)
+            {
+                npcBehaviour.SetTeam(teamOfGiver);
+            }
 
+            UpdateOnGiftChanged(npcBehaviour, teamOfGiver);
+        }
+
+        private void UpdateOnGiftChanged(NPCBehaviour npc, teamEnum teamOfGiver)
+        {
+            int total = npc.GetTotalGifts();
+            switch (total)
+            {
+                case 0:
+                    npc.SetTeam(teamEnum.Nix);
+                    npc.npc_speed = 1.0f;
+                    npc.npc_scarability = 0.5f;
+                    break;
+                case 1:
+                    npc.SetTeam(teamOfGiver);
+                    npc.npc_speed = 2.0f;
+                    npc.npc_scarability = 0.5f;
+                    break;
+                case 2:
+                    npc.npc_speed = 3.0f;
+                    npc.npc_scarability = 0.75f;
+                    break;
+                case 3:
+                    npc.npc_speed = 4.0f;
+                    npc.npc_scarability = 1.0f;
+                    break;
+                default:
+                    break;
+            }
+            print($"NPC gifts: {npc.GetTotalGifts()}, Team: {npc.team}");
         }
 
     }

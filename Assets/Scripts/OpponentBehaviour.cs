@@ -47,20 +47,42 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
 
         var target = findNearestTarget();
         if (target == null) return cmd;
+        bool emptyNPCExists = false;
+        NPCBehaviour hit_component;
+        foreach (var hit in allNPCs)
+            {
+                hit_component = hit.GetComponent<NPCBehaviour>();
+                if (hit_component == null) continue; 
+                if (hit_component.team == teamEnum.Nix)
+                {
+                    emptyNPCExists = true;
+                    break;
+                }
+            }
 
-        float dir_npc = Mathf.Sign(target.position.x - transform.position.x);
-        cmd.move = dir_npc;
+        if(emptyNPCExists)  {
+                float dir_npc = Mathf.Sign(target.position.x - transform.position.x);
+                cmd.move = dir_npc;
 
-        Vector2 origin_npc = (Vector2)self.transform.position + new Vector2(0f, 0.1f);
-        bool grounded_npc = Physics2D.Raycast(origin_npc, Vector2.down, 0.8f, groundMask);
-        bool wallAhead_npc = Physics2D.Raycast(origin_npc, new Vector2(dir_npc, 0f), wallCheckDist, groundMask);
+                Vector2 origin_npc = (Vector2)self.transform.position + new Vector2(0f, 0.1f);
+                bool grounded_npc = Physics2D.Raycast(origin_npc, Vector2.down, 0.8f, groundMask);
+                bool wallAhead_npc = Physics2D.Raycast(origin_npc, new Vector2(dir_npc, 0f), wallCheckDist, groundMask);
 
-        if (grounded_npc && wallAhead_npc && jumpTimer <= 0f)
-        {
-            cmd.jump = true;
-            jumpTimer = jumpCooldown;
-        }
+                if (grounded_npc && wallAhead_npc && jumpTimer <= 0f)
+                {
+                    cmd.jump = true;
+                    jumpTimer = jumpCooldown;
+                }
+                return cmd;
+            }
+            else
+            {
+                // Track the npc's with other players gifts
+                float dir_npc_gift = Mathf.Sign(target.position.x - transform.position.x);
+                cmd.move = dir_npc_gift;
+            }
         return cmd;
+
     }
 
     Transform findNearestTarget()
