@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour
 
     private bool hasGift=false;
     private GameObject gift=null;
+    public bool HasGift => hasGift;
 
     private void Start()
     {
@@ -131,7 +132,6 @@ public class PlayerController : MonoBehaviour
         {
             BotCommand cmd = botBrain.GetNextCommand(this);
             horizontalInput = Mathf.Clamp(cmd.move, -1f, 1f);
-            print("Bot horizontal input: " + horizontalInput);
             if (cmd.jump && IsGrounded())
             {
                 jumpRequested = true;

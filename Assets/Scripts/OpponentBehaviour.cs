@@ -16,11 +16,11 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
     [SerializeField] teamEnum myTeam = teamEnum.Red;
     private List<GameObject> allNPCs=new List<GameObject>();
 
+    [SerializeField] Transform myGiftPile;
     public BotCommand GetNextCommand(PlayerController.PlayerController self)
     {
-        print("Getting next bot command");
         var cmd = new PlayerController.BotCommand();
-        print("Returning cmd.move = " + cmd.move);
+        if(self == null) return cmd;
         var target = findNearestTarget();
         if (target == null) return cmd;
 
@@ -32,13 +32,11 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
                                              Vector2.down,
                                              0.7f,
                                              groundMask);
-        print("Grounded: " + grounded);
         return cmd;
     }
 
     Transform findNearestTarget()
     {
-        print("Finding nearest target");
         Transform nearest = null;
         float nearestDistSqr = float.MaxValue;
         foreach (var hit in allNPCs)
@@ -53,7 +51,6 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
                 nearestDistSqr = d;
             }
         }
-        print("Nearest target: " + (nearest != null ? nearest.name : "None"));
         return nearest;
     }
     private void updateNPCList(List<GameObject> npcList)
