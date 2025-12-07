@@ -38,69 +38,121 @@ public class NPCGift : MonoBehaviour
             NPCBehaviour thisNPC = GetComponent<NPCBehaviour>();
             NPCBehaviour thatNPC = otherNPC.GetComponent<NPCBehaviour>();
 
-            if(thisNPC.team != thatNPC.team)
+            if(thisNPC.team != thatNPC.team && thatNPC.GetTotalGifts() > 0)
             {
                 if(Random.value < thisNPC.npc_scarability * scarabilityModifier)
                 {
-                    thatNPC.RemoveGift(thatNPC.team);
-                    UpdateOnGiftChanged(thatNPC, thatNPC.team);
-                    print("NPC scared away a gift! Other NPC's total gifts: " + thatNPC.GetTotalGifts());
+                    // Find the dominant team of the other NPC and remove one gift from it
+                    teamEnum dominantTeam = FindDominantTeam(thatNPC);
+                    if (dominantTeam != teamEnum.Nix)
+                    {
+                        thatNPC.RemoveGift(dominantTeam);
+                        RecalculateTeamAndStats(thatNPC);
+                        print($"NPC scared away a {dominantTeam} gift! Other NPC's total gifts: " + thatNPC.GetTotalGifts());
+                    }
                 }
             }
         }
+
+        private teamEnum FindDominantTeam(NPCBehaviour npc)
+        {
+            teamEnum dominantTeam = teamEnum.Nix;
+            int maxGifts = 0;
+            foreach (var t in new[] { teamEnum.Red, teamEnum.Blue, teamEnum.Green, teamEnum.Yellow })
+            {
+                int count = npc.GetGiftCount(t);
+                if (count > maxGifts)
+                {
+                    maxGifts = count;
+                    dominantTeam = t;
+                }
+            }
+            return dominantTeam;
+        }
+
         // UNTESTED CODE ABOVE
 
-        public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
+public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
+{
+    gift.GetComponent<Gift>().canNPCTakeThisGift = false;
+    Destroy(gift);
+
+    NPCBehaviour npc = GetComponent<NPCBehaviour>();
+
+    // 1. If NPC currently has a dominant team:
+    teamEnum currentTeam = npc.team;
+
+    if (currentTeam != teamEnum.Nix && currentTeam != teamOfGiver)
+    {
+        // Opponent team gives a gift → erode existing team one by one
+        int count = npc.GetGiftCount(currentTeam);
+
+        npc.RemoveGift(currentTeam); // subtract one from existing team
+
+        if (count - 1 <= 0)
         {
-            gift.GetComponent<Gift>().canNPCTakeThisGift = false;
-            Destroy(gift);
-            NPCBehaviour npcBehaviour = GetComponent<NPCBehaviour>();
-
-            // If NPC has gifts from OTHER teams, remove one
-            if (npcBehaviour.team != teamOfGiver && npcBehaviour.team != teamEnum.Nix)
-            {
-                npcBehaviour.RemoveGift(npcBehaviour.team); // remove old team's gift
-            }
-
-            npcBehaviour.AddGift(teamOfGiver); // add new gift from giver
-            
-            // Update team if this is the first gift
-            if (npcBehaviour.GetTotalGifts() == 1)
-            {
-                npcBehaviour.SetTeam(teamOfGiver);
-            }
-
-            UpdateOnGiftChanged(npcBehaviour, teamOfGiver);
+            npc.SetTeam(teamEnum.Nix); // eroded to zero → neutral
         }
+    }
+    else
+    {
+        // 2. Either neutral OR same team gives gift → add normally
+        npc.AddGift(teamOfGiver);
+    }
 
-        private void UpdateOnGiftChanged(NPCBehaviour npc, teamEnum teamOfGiver)
+    // After any change, recalc team and stats
+    RecalculateTeamAndStats(npc);
+}
+private void RecalculateTeamAndStats(NPCBehaviour npc)
+{
+    int total = npc.GetTotalGifts();
+
+    teamEnum dominant = teamEnum.Nix;
+    int maxCount = 0;
+
+    // Iterate through ALL teams dynamically
+    foreach (teamEnum t in System.Enum.GetValues(typeof(teamEnum)))
+    {
+        if (t == teamEnum.Nix) continue; // skip neutral
+
+        int c = npc.GetGiftCount(t);
+        if (c > maxCount)
         {
-            int total = npc.GetTotalGifts();
-            switch (total)
-            {
-                case 0:
-                    npc.SetTeam(teamEnum.Nix);
-                    npc.npc_speed = 1.0f;
-                    npc.npc_scarability = 0.5f;
-                    break;
-                case 1:
-                    npc.SetTeam(teamOfGiver);
-                    npc.npc_speed = 2.0f;
-                    npc.npc_scarability = 0.5f;
-                    break;
-                case 2:
-                    npc.npc_speed = 3.0f;
-                    npc.npc_scarability = 0.75f;
-                    break;
-                case 3:
-                    npc.npc_speed = 4.0f;
-                    npc.npc_scarability = 1.0f;
-                    break;
-                default:
-                    break;
-            }
-            print($"NPC gifts: {npc.GetTotalGifts()}, Team: {npc.team}");
+            maxCount = c;
+            dominant = t;
         }
+    }
+
+    // A team is dominant ONLY if it owns all gifts
+    if (maxCount == total && total > 0)
+        npc.SetTeam(dominant);
+    else
+        npc.SetTeam(teamEnum.Nix);
+
+    // Update stats based only on total gift count
+    switch (total)
+    {
+        case 0:
+            npc.npc_speed = 1.0f;
+            npc.npc_scarability = 0.5f;
+            break;
+        case 1:
+            npc.npc_speed = 2.0f;
+            npc.npc_scarability = 0.5f;
+            break;
+        case 2:
+            npc.npc_speed = 3.0f;
+            npc.npc_scarability = 0.75f;
+            break;
+        case 3:
+            npc.npc_speed = 4.0f;
+            npc.npc_scarability = 1.0f;
+            break;
+    }
+
+    print($"NPC gifts: {npc.GetTotalGifts()}, Team: {npc.team}");
+}
+
 
     }
 
