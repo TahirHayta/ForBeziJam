@@ -75,7 +75,6 @@ public class NPCGift : MonoBehaviour
 public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
 {
     gift.GetComponent<Gift>().canNPCTakeThisGift = false;
-    Destroy(gift);
 
     NPCBehaviour npc = GetComponent<NPCBehaviour>();
 
@@ -97,7 +96,11 @@ public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
     else
     {
         // 2. Either neutral OR same team gives gift → add normally
-        npc.AddGift(teamOfGiver);
+        if (npc.GetTotalGifts() < 3)
+                {
+                    npc.AddGift(teamOfGiver);
+                    Destroy(gift);
+                }
     }
 
     // After any change, recalc team and stats

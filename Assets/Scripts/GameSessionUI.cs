@@ -22,6 +22,8 @@ namespace GameSessionUI
     public LayoutElement greenBarLayout;
     public LayoutElement yellowBarLayout;
 
+    [SerializeField] Button pauseButton;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -73,6 +75,11 @@ namespace GameSessionUI
         blueBarLayout.flexibleWidth = blueCount;
         greenBarLayout.flexibleWidth = greenCount;
         yellowBarLayout.flexibleWidth = yellowCount;
+
+        redBarLayout.preferredHeight = 50f;
+        blueBarLayout.preferredHeight = 50f;
+        greenBarLayout.preferredHeight = 50f;
+        yellowBarLayout.preferredHeight = 50f;
     }
     public void EndGame() //Called from backend
     {
@@ -95,6 +102,16 @@ namespace GameSessionUI
             Time.timeScale = 1f; // Resumes the game
             if(pauseMenuPanel) pauseMenuPanel.SetActive(false);
         }
+    }
+
+    void Awake()
+    {
+        // Anchor pause button to top-right
+        RectTransform pauseRect = pauseButton.GetComponent<RectTransform>();
+        pauseRect.anchorMin = new Vector2(1f, 1f); // top-right
+        pauseRect.anchorMax = new Vector2(1f, 1f);
+        pauseRect.pivot = new Vector2(1f, 1f);
+        pauseRect.anchoredPosition = new Vector2(-20f, -20f); // 20px offset from corner
     }
 
 } 
