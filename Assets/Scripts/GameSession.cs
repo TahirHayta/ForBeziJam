@@ -3,9 +3,13 @@ using UnityEngine.UI;
 using TMPro; // Don't forget this for Text Mesh Pro
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
-
+using System;
+namespace GameSession
+{
+    
 public class GameSession : MonoBehaviour
 {
+
     [Header("Game Settings")]
     public float gameDuration = 60f; // 60 seconds
     private float currentTime=0f;
@@ -14,7 +18,7 @@ public class GameSession : MonoBehaviour
 
     [Header("Tracked Objects")]
     // We will find these automatically at start
-    private List<GameObject> allNPCs=new List<GameObject>(); 
+    public List<GameObject> allNPCs=new List<GameObject>(); 
 
     [Header("UI References")]
     public TextMeshProUGUI timerText;
@@ -26,7 +30,7 @@ public class GameSession : MonoBehaviour
     public LayoutElement blueBarLayout;
     public LayoutElement greenBarLayout;
     public LayoutElement yellowBarLayout;
-
+    public static event Action<List<GameObject>> OnNPCListChanged;
     private void Start()
     {
         // 1. Get the integer ID for the "NPC" layer // TODO this can be more efficient way find
@@ -43,6 +47,7 @@ public class GameSession : MonoBehaviour
                 allNPCs.Add(go);
             }
         }
+        OnNPCListChanged?.Invoke(allNPCs);
 
         // 2. Initialize Timer
         currentTime = gameDuration;
@@ -138,4 +143,5 @@ public class GameSession : MonoBehaviour
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+}
 }

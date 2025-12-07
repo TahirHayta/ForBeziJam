@@ -1,5 +1,7 @@
 using UnityEngine;
 using PlayerController;
+using GameSession;
+using System.Collections.Generic;
 
 namespace AI
 {
@@ -12,6 +14,7 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
     [SerializeField] LayerMask groundMask;
     [SerializeField] LayerMask npcMask;
     [SerializeField] teamEnum myTeam = teamEnum.Red;
+    private List<GameObject> allNPCs=new List<GameObject>();
 
     public BotCommand GetNextCommand(PlayerController.PlayerController self)
     {
@@ -36,10 +39,9 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
     Transform findNearestTarget()
     {
         print("Finding nearest target");
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, detectRadius, npcMask);
         Transform nearest = null;
         float nearestDistSqr = float.MaxValue;
-        foreach (var hit in hits)
+        foreach (var hit in allNPCs)
         {
             var npc = hit.GetComponent<NPCBehaviour>();
             if (npc == null) continue;
@@ -54,5 +56,19 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
         print("Nearest target: " + (nearest != null ? nearest.name : "None"));
         return nearest;
     }
+    private void updateNPCList(List<GameObject> npcList)
+    {
+
+        allNPCs = npcList;
+    }
+    private void OnEnable()
+    {
+        GameSession.GameSession.OnNPCListChanged += updateNPCList;
+    }
+    private void OnDisable()
+    {
+        GameSession.GameSession.OnNPCListChanged -= updateNPCList;
+    }
 }
+
 }
