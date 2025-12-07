@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         rb2d = GetComponent<Rigidbody2D>();
-        if (isBotPlayer && botBrainComponent != null)
+        if (isBotPlayer && botBrainComponent == null)
         {
             botBrainComponent = GetComponent<AI.OpponentBehaviour>();
         }
@@ -101,11 +101,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // Horizontal movement
         if (rb2d != null)
         {
             rb2d.linearVelocity = new Vector2(horizontalInput * speed, rb2d.linearVelocity.y);
-
             if (jumpRequested)
             {
                 rb2d.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
@@ -208,7 +206,6 @@ public class PlayerController : MonoBehaviour
     {
         if (pickup.CompareTag("GiftPile")&&pickup.GetComponent<GiftPile>().team==this_player_team){
             this.hasGift=true;
-            Debug.Log("gift is picked up");
             //Create a new gift gameobject
             this.gift = Instantiate(pickup.GetComponent<GiftPile>().giftPrefab);
             this.gift.SetActive(false);
@@ -222,7 +219,6 @@ public class PlayerController : MonoBehaviour
         otherNPC.GetComponentInParent<NPCGift.NPCGift>().HandleGiftInteraction(this.gift,this_player_team);
         this.hasGift=false;
         this.gift=null;
-        Debug.Log("gift is given");
     }
 
 
@@ -230,6 +226,10 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+            if (isBotPlayer)
+            {
+                print("Bot collided with: " + other.gameObject.name);
+            }
         if (IsPickup(other.gameObject)) HandlePickup(other.gameObject);
         else if (other.gameObject.CompareTag("NPC")) HandleNPCCollisionWithPlayer(other.gameObject);
     }
