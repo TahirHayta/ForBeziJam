@@ -6,6 +6,7 @@ namespace NPCWalk {
 [RequireComponent(typeof(Rigidbody2D))]
 public class NPCWalk : MonoBehaviour
 {
+    [SerializeField] private Animator animator;
     public float npc_speed = 2.0f;
     public float dir_change_interv = 1.0f;
     
@@ -26,6 +27,12 @@ public class NPCWalk : MonoBehaviour
 
     void FixedUpdate()
     {
+        animator.SetFloat("Speed", Mathf.Abs(npc_speed));
+        if (direction != 1) {animator.SetBool("isRight", false);}
+        else {animator.SetBool("isRight", true);}
+
+        
+
         rb2d.linearVelocity = new Vector2(direction * npc_speed, rb2d.linearVelocity.y);
     }
 

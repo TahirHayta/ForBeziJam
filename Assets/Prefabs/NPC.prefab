@@ -152,6 +152,7 @@ GameObject:
   - component: {fileID: 916940211563648062}
   - component: {fileID: 591750632659155746}
   - component: {fileID: 7978387536308662524}
+  - component: {fileID: -1057836621475733217}
   m_Layer: 6
   m_Name: NPC
   m_TagString: Untagged
@@ -333,6 +334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1cb7e296e69f5831698fa75bd6214635, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCWalk.NPCWalk
+  animator: {fileID: -1057836621475733217}
   npc_speed: 2
   dir_change_interv: 1
 --- !u!114 &7978387536308662524
@@ -348,3 +350,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NPCGift.NPCGift
   scarabilityModifier: 0.25
+--- !u!95 &-1057836621475733217
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9173283515814565947}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 86a1bd1e3d098cf45853648c15c35001, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
