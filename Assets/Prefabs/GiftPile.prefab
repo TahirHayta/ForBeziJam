@@ -151,4 +151,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GiftPile
   team: 0
-  giftPrefab: {fileID: 1185058998079536700, guid: 2260671eb5b8b714784bd8490a634962, type: 3}
+  giftPrefab: {fileID: 4043508369087610648, guid: 2260671eb5b8b714784bd8490a634962, type: 3}
