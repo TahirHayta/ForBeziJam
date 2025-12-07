@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using NPC;
 
 namespace NPCGift {
 
@@ -35,8 +36,8 @@ public class NPCGift : MonoBehaviour
         // UNTESTED CODE BELOW
         void HandleNPCCollision(GameObject otherNPC)
         {
-            NPCBehaviour thisNPC = GetComponent<NPCBehaviour>();
-            NPCBehaviour thatNPC = otherNPC.GetComponent<NPCBehaviour>();
+            NPC.NPCBehaviour thisNPC = GetComponent<NPC.NPCBehaviour>();
+            NPC.NPCBehaviour thatNPC = otherNPC.GetComponent<NPC.NPCBehaviour>();
 
             if(thisNPC.team != thatNPC.team && thatNPC.GetTotalGifts() > 0)
             {
@@ -54,7 +55,7 @@ public class NPCGift : MonoBehaviour
             }
         }
 
-        private teamEnum FindDominantTeam(NPCBehaviour npc)
+        private teamEnum FindDominantTeam(NPC.NPCBehaviour npc)
         {
             teamEnum dominantTeam = teamEnum.Nix;
             int maxGifts = 0;
@@ -76,7 +77,7 @@ public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
 {
     gift.GetComponent<Gift>().canNPCTakeThisGift = false;
 
-    NPCBehaviour npc = GetComponent<NPCBehaviour>();
+    NPC.NPCBehaviour npc = GetComponent<NPC.NPCBehaviour>();
 
     // 1. If NPC currently has a dominant team:
     teamEnum currentTeam = npc.team;
@@ -106,7 +107,7 @@ public void HandleGiftInteraction(GameObject gift, teamEnum teamOfGiver)
     // After any change, recalc team and stats
     RecalculateTeamAndStats(npc);
 }
-private void RecalculateTeamAndStats(NPCBehaviour npc)
+private void RecalculateTeamAndStats(NPC.NPCBehaviour npc)
 {
     int total = npc.GetTotalGifts();
 

@@ -2,6 +2,7 @@ using UnityEngine;
 using PlayerController;
 using GameSession;
 using System.Collections.Generic;
+using NPC;
 
 namespace AI
 {
@@ -50,7 +51,7 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
         var target = findNearestTarget();
         if (target == null) return cmd;
         bool emptyNPCExists = false;
-        NPCBehaviour hit_component;
+        NPC.NPCBehaviour hit_component;
         foreach (var hit in allNPCs)
             {
                 hit_component = hit.GetComponent<NPCBehaviour>();

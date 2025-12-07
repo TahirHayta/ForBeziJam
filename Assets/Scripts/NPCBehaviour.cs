@@ -4,8 +4,11 @@ using NPCWalk;
 using NPCGift;
 using System.Collections.Generic;
 
+namespace NPC
+{
 [RequireComponent(typeof(NPCWalk.NPCWalk))]
 [RequireComponent(typeof(NPCGift.NPCGift))]
+    
 public class NPCBehaviour : MonoBehaviour
 {
     [SerializeField] NPCWalk.NPCWalk npcWalk;
@@ -51,4 +54,5 @@ public class NPCBehaviour : MonoBehaviour
         npcWalk = GetComponent<NPCWalk.NPCWalk>();
         npcGift = GetComponent<NPCGift.NPCGift>();
     }
+}
 }

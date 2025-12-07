@@ -4,6 +4,7 @@ using GameSession;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro; // Don't forget this for Text Mesh Pro
+using NPC;
 
 
 namespace GameSessionUI
@@ -94,7 +95,7 @@ namespace GameSessionUI
 
         foreach (GameObject npcGameObject in allNPCs)
         {
-            NPCBehaviour npc = npcGameObject.GetComponent<NPCBehaviour>();
+            NPC.NPCBehaviour npc = npcGameObject.GetComponent<NPC.NPCBehaviour>();
             switch (npc.team) 
             {
                 case teamEnum.Red: redCount++; break;
@@ -137,7 +138,7 @@ namespace GameSessionUI
         int count = 0;
         foreach (GameObject npcGameObject in allNPCs)
         {
-            NPCBehaviour npc = npcGameObject.GetComponent<NPCBehaviour>();
+            NPC.NPCBehaviour npc = npcGameObject.GetComponent<NPC.NPCBehaviour>();
             if (npc.team == team) count++;
         }
         return count;
