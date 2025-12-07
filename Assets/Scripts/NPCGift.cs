@@ -36,6 +36,13 @@ public class NPCGift : MonoBehaviour
         {
             switch(NPC.giftCount)
             {
+                case -1:
+                    NPC.giftCount=0;
+                    NPC.SetTeam(teamEnum.Nix);
+                    print("team nix!");
+                    NPC.npc_speed = 1.0f;
+                    NPC.npc_scarability -= 0.25f;
+                    break;
                 case 0:
                     NPC.SetTeam(teamEnum.Nix);
                     print("team nix!");
