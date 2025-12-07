@@ -15,6 +15,8 @@ namespace GameSessionUI
     public TextMeshProUGUI timerText;
     public GameObject pauseMenuPanel; // The panel with Resume/Quit buttons
     public GameObject gameOverPanel;
+
+    public RectTransform scoreBarContainer;
     
     // UI Bar References (Using Layout Elements)
     public LayoutElement redBarLayout;
@@ -39,6 +41,11 @@ namespace GameSessionUI
 
         HandleTimer();
         UpdateScoreBar(this.gameSession.allNPCs);
+
+        if (this.gameSession.currentTime <= 0f)
+        {
+            this.gameSession.EndGame();
+        }
     }
 
     void HandleTimer()
@@ -47,6 +54,34 @@ namespace GameSessionUI
         int minutes = Mathf.FloorToInt(this.gameSession.currentTime / 60F);
         int seconds = Mathf.FloorToInt(this.gameSession.currentTime % 60F);
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
+    }
+
+    teamEnum CalculateWinner(List<GameObject> allNPCs)
+    {
+        int redCount = 0;
+        int blueCount = 0;
+        int greenCount = 0;
+        int yellowCount = 0;
+
+        foreach (GameObject npcGameObject in allNPCs)
+        {
+            NPCBehaviour npc = npcGameObject.GetComponent<NPCBehaviour>();
+            switch (npc.team) 
+            {
+                case teamEnum.Red: redCount++; break;
+                case teamEnum.Blue: blueCount++; break;
+                case teamEnum.Green: greenCount++; break;
+                case teamEnum.Yellow: yellowCount++; break;
+            }
+        }
+
+        int maxCount = Mathf.Max(redCount, Mathf.Max(blueCount, Mathf.Max(greenCount, yellowCount)));
+        
+        if (redCount == maxCount) return teamEnum.Red;
+        if (blueCount == maxCount) return teamEnum.Blue;
+        if (greenCount == maxCount) return teamEnum.Green;
+        if (yellowCount == maxCount) return teamEnum.Yellow;
+        return teamEnum.Nix;
     }
 
     void UpdateScoreBar(List<GameObject> allNPCs)
@@ -84,8 +119,28 @@ namespace GameSessionUI
     public void EndGame() //Called from backend
     {
         timerText.text = "00:00";
-        if(gameOverPanel) gameOverPanel.SetActive(true);
-        Debug.Log("Game Over!");
+        scoreBarContainer.gameObject.SetActive(false);
+        
+        teamEnum winner = CalculateWinner(this.gameSession.allNPCs);
+        int winningScore = GetTeamScore(this.gameSession.allNPCs, winner);
+        
+        gameOverPanel.GetComponentInChildren<TextMeshProUGUI>().fontSize = 20;
+        gameOverPanel.GetComponentInChildren<TextMeshProUGUI>().text = $"Game Over!\n{winner} Team Wins!\nScore: {winningScore}";
+        
+        gameSession.isGameActive = false;
+        gameOverPanel.SetActive(true);
+        Debug.Log($"Game Over! Winner: {winner}");
+    }
+
+    int GetTeamScore(List<GameObject> allNPCs, teamEnum team)
+    {
+        int count = 0;
+        foreach (GameObject npcGameObject in allNPCs)
+        {
+            NPCBehaviour npc = npcGameObject.GetComponent<NPCBehaviour>();
+            if (npc.team == team) count++;
+        }
+        return count;
     }
 
     public void TogglePause()

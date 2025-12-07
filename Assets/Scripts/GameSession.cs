@@ -74,10 +74,11 @@ public class GameSession : MonoBehaviour
     }
 
 
-    void EndGame()
+    public void EndGame()
     {
         isGameActive = false;
-        currentTime = 0;
+        teamEnum winningTeam = teamEnum.Nix;
+        gameSessionUI.EndGame();
     }
 
 
