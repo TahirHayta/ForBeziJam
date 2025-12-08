@@ -1,7 +1,7 @@
 About Game:
 
 	Turkeys dominates Santa Clause Is a chaotic, holiday-themed platformer set in a mysterious castle. 
-It features 4 players in total 1 local player + 3 bots competing for dominance. 
+	It features 4 players in total 1 local player + 3 bots competing for dominance. 
 
 	The goal is to manipulate Santa Clauses by smashing them to gain influence. By the end of the round, the player with the highest influence over the Santas wins the game! Get ready for a festive strategy battle filled with mayhem.
 
