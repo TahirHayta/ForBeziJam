@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8763920472650868458}
   - component: {fileID: 5731264543964391816}
   - component: {fileID: -5067968698481093069}
+  - component: {fileID: -8359679782011416220}
   m_Layer: 7
   m_Name: Bot
   m_TagString: Untagged
@@ -160,6 +161,8 @@ MonoBehaviour:
   moveSpeed: 6
   detectRadius: 1
   wallCheckDist: 0.6
+  stairAlignThreshold: 0.25
+  upperFloorPause: 1
   jumpCooldown: 0.35
   groundMask:
     serializedVersion: 2
@@ -204,4 +207,26 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 0.5
+  m_Radius: 0.25
+--- !u!95 &-8359679782011416220
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5336923883836677907}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ab8e419ce773336428633f43f75c8da1, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
