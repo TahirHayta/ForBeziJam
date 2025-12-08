@@ -158,6 +158,20 @@ public class GameSession : MonoBehaviour
                 this.stairWorldPositions.Add(worldPos2D);
             }
         }
+        List<Vector2> midPoints = new List<Vector2>();
+            // Make sure count is even; if odd, ignore last one
+            for (int i = 0; i < this.stairWorldPositions.Count - 1; i += 2)
+            {
+                Vector2 a = this.stairWorldPositions[i];
+                Vector2 b = this.stairWorldPositions[i + 1];
+                
+                Vector2 mid = (a + b) / 2f;   // midpoint
+                midPoints.Add(mid);
+                Debug.Log("firt"+a+"second"+b+mid);
+            }
+
+            // Replace old list with midpoints
+            this.stairWorldPositions = midPoints;
     }
 
 }

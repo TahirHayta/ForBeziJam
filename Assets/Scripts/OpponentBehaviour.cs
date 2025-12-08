@@ -19,6 +19,7 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
     [SerializeField] float jumpCooldown = 0.35f;
     float jumpTimer;
 
+
     [SerializeField] LayerMask groundMask; // Set to "Ground" layer ONLY in Inspector
     [SerializeField] LayerMask npcMask;
     [SerializeField] teamEnum myTeam = teamEnum.Red;
@@ -34,95 +35,171 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
     }
 
 
-    public BotCommand GetNextCommand(PlayerController.PlayerController self)
+public PlayerController.BotCommand GetNextCommand(PlayerController.PlayerController self)
+{
+    var cmd = new PlayerController.BotCommand();
+    if (self == null) return cmd;
+
+    jumpTimer -= Time.deltaTime;
+
+    Transform target = GetTarget();
+    if (target == null) return cmd;
+
+    Floor myFloor = GetFloor(transform.position.y);
+    Floor targetFloor = GetFloor(target.position.y);
+
+    Vector2 myPos = transform.position;
+
+    // ✅ SAME FLOOR → DIRECT CHASE
+    if (myFloor == targetFloor)
     {
-        var cmd = new PlayerController.BotCommand();
-        if (self == null) return cmd;
+        float dir = Mathf.Sign(target.position.x - transform.position.x);
+        cmd.move = dir;
 
-        jumpTimer -= Time.deltaTime;
-        stairAscendPause = Mathf.Max(0f, stairAscendPause - Time.deltaTime);
+        Vector2 origin = (Vector2)self.transform.position + new Vector2(0f, 0.1f);
+        bool grounded = self.IsGrounded();
+        bool wallAhead = Physics2D.Raycast(origin, new Vector2(dir, 0f), wallCheckDist, groundMask);
 
-        if(!self.HasGift && myGiftPile != null)
+        if (grounded && wallAhead && jumpTimer <= 0f)
         {
-            float dir = Mathf.Sign(myGiftPile.position.x - transform.position.x);
-            cmd.move = dir;
-
-            Vector2 origin = (Vector2)self.transform.position + new Vector2(0f, 0.1f);
-            bool grounded = self.IsGrounded();
-            bool wallAhead = Physics2D.Raycast(origin, new Vector2(dir, 0f), wallCheckDist, groundMask);
-            return cmd;
-        } 
-
-        var target = findNearestTarget();
-        if (target == null) return cmd;
-        bool emptyNPCExists = false;
-        NPC.NPCBehaviour hit_component;
-        foreach (var hit in allNPCs)
-            {
-                hit_component = hit.GetComponent<NPCBehaviour>();
-                if (hit_component == null) continue; 
-                if (hit_component.team == teamEnum.Nix)
-                {
-                    emptyNPCExists = true;
-                    break;
-                }
-            }
-
-        if(emptyNPCExists)  {
-                float dir_npc = Mathf.Sign(target.position.x - transform.position.x);
-                cmd.move = dir_npc;
-
-                Vector2 origin_npc = (Vector2)self.transform.position + new Vector2(0f, 0.1f);
-                bool grounded_npc = self.IsGrounded();
-                bool wallAhead_npc = Physics2D.Raycast(origin_npc, new Vector2(dir_npc, 0f), wallCheckDist, groundMask);
-
-                if (grounded_npc && wallAhead_npc && jumpTimer <= 0f)
-                {
-                    cmd.jump = true;
-                    jumpTimer = jumpCooldown;
-                }
-                return cmd;
-            }
-            else
-            {
-                // Track the npc's with other players gifts
-                float dir_npc_gift = Mathf.Sign(target.position.x - transform.position.x);
-                cmd.move = dir_npc_gift;
-
-                // Add jump logic here too
-                Vector2 origin_gift = (Vector2)self.transform.position + new Vector2(0f, 0.1f);
-                bool grounded_gift = self.GetComponent<PlayerController.PlayerController>().IsGrounded();
-                bool wallAhead_gift = Physics2D.Raycast(origin_gift, new Vector2(dir_npc_gift, 0f), wallCheckDist, groundMask);
-
-                if (grounded_gift && wallAhead_gift && jumpTimer <= 0f)
-                {
-                    cmd.jump = true;
-                    jumpTimer = jumpCooldown;
-                }
-            }
-        return cmd;
-
-    }
-
-    Transform findNearestTarget()
-    {
-        Transform nearest = null;
-        float nearestDistSqr = float.MaxValue;
-        foreach (var hit in allNPCs)
-        {
-            var npc = hit.GetComponent<NPCBehaviour>();
-            if (npc == null) continue;
-            if (npc.team == myTeam) continue;
-            float d= (hit.transform.position - transform.position).sqrMagnitude;
-            if (d < nearestDistSqr)
-            {
-                nearest = hit.transform;
-                nearestDistSqr = d;
-            }
+            cmd.jump = true;
+            jumpTimer = jumpCooldown;
         }
-        return nearest;
+
+        return cmd;
     }
-    private void updateNPCList(List<GameObject> npcList)
+
+    // ✅ DIFFERENT FLOORS → PATHFIND WITH STAIRS
+    Vector2 stairTarget = GetBestStair(myFloor, targetFloor);
+
+
+
+    bool atStair = Mathf.Abs(transform.position.x - stairTarget.x) < 0.2f;
+    if (!atStair) MoveToward(stairTarget, ref cmd);
+
+    if (atStair)
+    {
+        bool goingUp = targetFloor > myFloor;
+        HandleStairUse(goingUp, ref cmd);
+    }
+
+    return cmd;
+}
+
+
+
+Transform findNearestTarget()
+{
+    // ✅ 1. PRIORITY: If bot has NO gift → go to GiftPile
+    if (!GetComponent<PlayerController.PlayerController>().HasGift && myGiftPile != null)
+    {
+        return myGiftPile;
+    }
+
+    // ✅ 2. Otherwise → find nearest enemy NPC
+    Transform nearest = null;
+    float nearestDistSqr = float.MaxValue;
+
+    foreach (var hit in allNPCs)
+    {
+        var npc = hit.GetComponent<NPCBehaviour>();
+        if (npc == null) continue;
+
+        // ❌ Skip own team
+        if (npc.team == myTeam) continue;
+
+        float d = (hit.transform.position - transform.position).sqrMagnitude;
+
+        if (d < nearestDistSqr)
+        {
+            nearest = hit.transform;
+            nearestDistSqr = d;
+        }
+    }
+
+    return nearest;
+}   
+
+enum Floor
+{
+    First,
+    Second,
+    Third
+}
+
+Floor GetFloor(float y)
+{
+    if (y > 1.08f) return Floor.Third;
+    if (y < -1.82f) return Floor.First;
+    return Floor.Second;
+}
+Transform GetTarget()
+{
+    return findNearestTarget();
+}
+Vector2 GetBestStair(Floor current, Floor target)
+{
+    float requiredY = 0f;
+
+    if (target < current) // GOING DOWN
+    {
+        if (current == Floor.Third) requiredY = 1.08f;
+        else if (current == Floor.Second) requiredY = -1.82f;
+    }
+    else if (target > current) // GOING UP
+    {
+        if (current == Floor.First) requiredY = -1.82f;
+        else if (current == Floor.Second) requiredY = 1.08f;
+    }
+
+    Vector2 best = Vector2.zero;
+    float bestDist = float.MaxValue;
+
+    foreach (var stair in stairWorldPositions)
+    {
+        if (Mathf.Abs(stair.y - requiredY) > 0.2f) continue;
+
+        float dist = Mathf.Abs(stair.x - transform.position.x);
+        if (dist < bestDist)
+        {
+            bestDist = dist;
+            best = stair;
+        }
+    }
+
+    return best;
+}
+void MoveToward(Vector2 target, ref PlayerController.BotCommand cmd)
+{
+    float dir = Mathf.Sign(target.x - transform.position.x);
+    cmd.move = dir;
+}
+float stairWaitTimer = 0f;
+
+void HandleStairUse(bool goingUp, ref PlayerController.BotCommand cmd)
+{
+    if (stairWaitTimer > 0f)
+    {
+        stairWaitTimer -= Time.deltaTime;
+        return;
+    }
+
+    if (goingUp)
+    {
+        cmd.jump = true;
+        stairWaitTimer = 2f;
+    }
+    else
+    {
+        cmd.down = true;
+        stairWaitTimer = 1f;
+    }
+}
+
+
+
+
+private void updateNPCList(List<GameObject> npcList)
     {
         allNPCs = npcList;
     }
