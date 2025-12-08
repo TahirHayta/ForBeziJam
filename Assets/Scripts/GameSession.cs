@@ -13,7 +13,7 @@ public class GameSession : MonoBehaviour
 {
 
     [Header("Game Settings")]
-    public float gameDuration = 60f; // 60 seconds
+    public float gameDuration = 180f; // 60 seconds
     public float currentTime=0f;
     public bool isGameActive = false;
     public bool isPaused = false;
