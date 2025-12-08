@@ -275,8 +275,11 @@ public class PlayerController : MonoBehaviour
 
     private void HandleNPCCollisionWithPlayer(GameObject otherNPC)
     {
+        
         if (!this.hasGift) return;
+        if (otherNPC.GetComponentInParent<NPC.NPCBehaviour>().team==this_player_team) return;
         if (anim != null) anim.SetTrigger("Attack");
+
         otherNPC.GetComponentInParent<NPCGift.NPCGift>().HandleGiftInteraction(this.gift,this_player_team);
         this.hasGift=false;
         this.gift=null;
