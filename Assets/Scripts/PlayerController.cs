@@ -19,6 +19,7 @@ public interface IBotBrain
 }
 public class PlayerController : MonoBehaviour
 {
+    private Animator anim;
     [Header("Movement")]
     [Tooltip("Horizontal move speed")] [SerializeField] private float speed = 6f;
     [Tooltip("Jump impulse")] [SerializeField] private float jumpForce = 9f;
@@ -57,7 +58,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         playerCollider = GetComponent<CircleCollider2D>();
-        
+        anim = GetComponent<Animator>();
     }
 
     private void Awake()
@@ -102,7 +103,14 @@ public class PlayerController : MonoBehaviour
                 HandleBotInput();
                 break;
         }
-        
+        if (anim != null)
+            {
+                anim.SetFloat("IsRunning", Mathf.Abs(horizontalInput));
+                if (horizontalInput != 0) transform.localScale = new Vector3(Mathf.Sign(horizontalInput), 1, 1);
+
+                if (IsGrounded() && (rb2d == null || rb2d.linearVelocity.y <= 0.1f)) anim.SetBool("IsJumping", false);
+            
+            }
         // (Optional) Add Gamepad support here if needed using Gamepad.current
     }
 
@@ -114,6 +122,7 @@ public class PlayerController : MonoBehaviour
             if (jumpRequested)
             {
                 rb2d.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                if (anim != null) anim.SetBool("IsJumping", true);
                 jumpRequested = false;
             }
         }
@@ -158,6 +167,7 @@ public class PlayerController : MonoBehaviour
     private IEnumerator FallbackJump()
     {
         isJumpingFallback = true;
+        if (anim != null) anim.SetBool("IsJumping", true);
         float peakTime = 0.25f;
         float elapsed = 0f;
 
@@ -255,6 +265,7 @@ public class PlayerController : MonoBehaviour
     {
         if (pickup.CompareTag("GiftPile")&&pickup.GetComponent<GiftPile>().team==this_player_team){
             this.hasGift=true;
+            if (anim != null) anim.SetTrigger("PickGift");
             //Create a new gift gameobject
             this.gift = Instantiate(pickup.GetComponent<GiftPile>().giftPrefab);
             this.gift.SetActive(false);
@@ -265,6 +276,7 @@ public class PlayerController : MonoBehaviour
     private void HandleNPCCollisionWithPlayer(GameObject otherNPC)
     {
         if (!this.hasGift) return;
+        if (anim != null) anim.SetTrigger("Attack");
         otherNPC.GetComponentInParent<NPCGift.NPCGift>().HandleGiftInteraction(this.gift,this_player_team);
         this.hasGift=false;
         this.gift=null;
