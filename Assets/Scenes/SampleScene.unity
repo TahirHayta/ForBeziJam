@@ -10566,6 +10566,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6394765904756524158, guid: 182ff3e7cd2cddd4b8087156a88f431c, type: 3}
+      propertyPath: m_text
+      value: ITS OVER
+      objectReference: {fileID: 0}
     - target: {fileID: 6595465902199047474, guid: 182ff3e7cd2cddd4b8087156a88f431c, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
