@@ -3,6 +3,8 @@ using PlayerController;
 using GameSession;
 using System.Collections.Generic;
 using NPC;
+using UnityEngine.Tilemaps;
+
 
 namespace AI
 {
@@ -11,6 +13,8 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
     [SerializeField] float moveSpeed = 6.0f;
     [SerializeField] float detectRadius = 10.0f;
     [SerializeField] float wallCheckDist = 0.3f;
+    [SerializeField] float stairAlignThreshold = 0.25f;
+    [SerializeField] float upperFloorPause = 1.0f;
 
     [SerializeField] float jumpCooldown = 0.35f;
     float jumpTimer;
@@ -19,14 +23,24 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
     [SerializeField] LayerMask npcMask;
     [SerializeField] teamEnum myTeam = teamEnum.Red;
     private List<GameObject> allNPCs=new List<GameObject>();
+    private List<Vector2> stairWorldPositions = new List<Vector2>(); // 2D world coords
 
     [SerializeField] Transform myGiftPile;
+
+    void Start()
+    {
+        groundMask = LayerMask.GetMask("Ground");
+        npcMask = LayerMask.GetMask("NPC");
+    }
+
+
     public BotCommand GetNextCommand(PlayerController.PlayerController self)
     {
         var cmd = new PlayerController.BotCommand();
         if (self == null) return cmd;
 
         jumpTimer -= Time.deltaTime;
+        stairAscendPause = Mathf.Max(0f, stairAscendPause - Time.deltaTime);
 
         if(!self.HasGift && myGiftPile != null)
         {
@@ -36,15 +50,6 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
             Vector2 origin = (Vector2)self.transform.position + new Vector2(0f, 0.1f);
             bool grounded = self.IsGrounded();
             bool wallAhead = Physics2D.Raycast(origin, new Vector2(dir, 0f), wallCheckDist, groundMask);
-
-            // Check if pile is above bot
-            bool pileAbove = myGiftPile.position.y > self.transform.position.y + 0.5f;
-
-            if (grounded && (wallAhead || pileAbove) && jumpTimer <= 0f)
-            {
-                cmd.jump = true;
-                jumpTimer = jumpCooldown;
-            }
             return cmd;
         } 
 
@@ -119,16 +124,22 @@ public class OpponentBehaviour : MonoBehaviour, IBotBrain
     }
     private void updateNPCList(List<GameObject> npcList)
     {
-
         allNPCs = npcList;
+    }
+    private void createStairsTilemap(List<Vector2> comingstairWorldPositions)
+    {
+        stairWorldPositions = comingstairWorldPositions;
     }
     private void OnEnable()
     {
         GameSession.GameSession.OnNPCListChanged += updateNPCList;
+        GameSession.GameSession.OnStairsTilemapAssigned+=createStairsTilemap;
     }
     private void OnDisable()
     {
         GameSession.GameSession.OnNPCListChanged -= updateNPCList;
+        GameSession.GameSession.OnStairsTilemapAssigned-=createStairsTilemap;
+
     }
 }
 
